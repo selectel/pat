@@ -1,5 +1,5 @@
 {application, pat,
- [{description, "Pat, the only SMTP postman"},
+ [{description, "Pat, the only SMTP postman!"},
   {vsn, "1"},
   {registered, []},
   {applications, [kernel, stdlib, gproc, crypto, ssl]},
