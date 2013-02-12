@@ -1,4 +1,4 @@
-%%% @author Sergei Levedev <lebedev@selectel.ru>
+%%% @author Sergei Levedev <superbobry@gmail.com>
 %%%
 %%% @copyright 2012 Selectel Ltd.
 %%%

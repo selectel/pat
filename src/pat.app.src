@@ -1,6 +1,6 @@
 {application, pat,
  [{description, "Pat, the only SMTP postman!"},
-  {vsn, "1"},
+  {vsn, "0.1"},
   {registered, []},
   {applications, [kernel, stdlib, gproc, crypto, ssl]},
   {mod, {pat, []}},

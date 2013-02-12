@@ -14,7 +14,7 @@
 Here's a quick example:
 
 ```erlang
-(pat@postoffice)1> Opts = [{user, <<"pat>>}, {password, <<"postman">>}],
+(pat@postoffice)1> Opts = [{user, <<"pat">>}, {password, <<"postman">>}],
 (pat@postoffice)2> Conn = pat:connect({<<"smtp.yandex.ru">>, 25}, Opts),
 (pat@postoffice)3> rr("include/*").
 (pat@postoffice)4> Email = #email{sender= <<"pat@ya.ru">>,
