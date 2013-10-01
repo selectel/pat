@@ -354,7 +354,7 @@ code(503) -> unexpected_command;
 code(530) -> access_denied;
 code(550) -> mailbox_unavailable;
 code(551) -> user_not_local;
-code(535) -> authentication_failed;
+code(553) -> authentication_failed;
 code(554) -> transaction_failed.
 
 -spec fqdn() -> binary().
