@@ -352,9 +352,10 @@ code(501) -> invalid_arguments;
 code(502) -> not_implemnted;
 code(503) -> unexpected_command;
 code(530) -> access_denied;
+code(535) -> authentication_failed;
 code(550) -> mailbox_unavailable;
 code(551) -> user_not_local;
-code(553) -> authentication_failed;
+code(553) -> mailbox_syntax_incorrect;
 code(554) -> transaction_failed.
 
 -spec fqdn() -> binary().
