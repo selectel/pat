@@ -116,12 +116,14 @@ check_any([{_Prio, Host}|Hosts], Port, Opts) ->
                                 | {error, pat_smtp:error()}.
 check_one(Host, Port, Opts) ->
     case pat_smtp:connect(Host, Port, Opts) of
-        {ok, {Socket, Banner}} ->
-            case pat_smtp:check(Socket, Opts) of
-                ok -> {ok, Banner};
-                {error, _Reason}=Error -> Error
-            end;
-        {error, _Reason}=Error  -> Error
+        {ok, {Connection, Banner}} ->
+            Result = case pat_smtp:check(Connection, Opts) of
+                         ok -> {ok, Banner};
+                         {error, _Reason}=Error -> Error
+                     end,
+            pat_smtp:close(Connection),
+            Result;
+        {error, _Reason}=Error -> Error
     end.
 
 -spec send_any([{integer(), inet_res:dns_name()}],
@@ -150,6 +152,9 @@ send_any([{_Prio, Host}|Hosts], Port, Envelope, Opts) ->
                                | {error, pat_smtp:error()}.
 send_one(Host, Port, Envelope, Opts) ->
     case pat_smtp:connect(Host, Port, Opts) of
-        {ok, {Socket, _Banner}} -> pat_smtp:send(Socket, Envelope, Opts);
-        {error, _Reason}=Error  -> Error
+        {ok, {Connection, _Banner}} ->
+            Result = pat_smtp:send(Connection, Envelope, Opts),
+            pat_smtp:close(Connection),
+            Result;
+        {error, _Reason}=Error -> Error
     end.

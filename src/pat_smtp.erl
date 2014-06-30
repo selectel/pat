@@ -3,7 +3,7 @@
 -include_lib("kernel/include/inet.hrl").
 
 %% Public API.
--export([connect/3, check/2, send/3]).
+-export([connect/3, close/1, check/2, send/3]).
 
 %% SMTP commands.
 -export([helo/3, ehlo/3, starttls/2, auth/3,
@@ -60,13 +60,22 @@ connect(Host, Port, Opts) ->
     case M:connect(ActualHost, Port, SocketOpts, Timeout) of
         {ok, Socket}           ->
             Connection = {M, Socket},
-            case recv(Connection, Timeout) of
-                {ok, [{220, Banner}|_]} -> {ok, {Connection, Banner}};
-                {ok, [{Status, _}|_]}   -> {error, code(Status)};
-                {error, _Reason}=Error  -> Error
-            end;
+            Result = case recv(Connection, Timeout) of
+                         {ok, [{220, Banner}|_]} -> {ok, {Connection, Banner}};
+                         {ok, [{Status, _}|_]}   -> {error, code(Status)};
+                         {error, _Reason}=Error  -> Error
+                     end,
+            case Result of
+                {ok, _} -> ok;
+                _       -> M:close(Socket)
+            end,
+            Result;
         {error, _Reason}=Error -> Error
     end.
+
+-spec close(connection()) -> ok.
+close({M, Socket}) ->
+    M:close(Socket).
 
 -spec check(connection(), pat:options()) -> ok | {error, error()}.
 check(Connection, Opts) ->
@@ -302,7 +311,7 @@ noop(Connection, Timeout) ->
 -spec communicate(connection(), binary(), status(), timeout())
                  -> {ok, [binary()]} | {error, error()}.
 communicate(Connection, Command, Status, Timeout) ->
-	ok = send(Connection, Command),
+    ok = send(Connection, Command),
     case recv(Connection, Timeout) of
         {ok, [{Status, _}|_]=Chunks} ->
             {ok, [Line || {_, Line} <- Chunks]};
