@@ -1,9 +1,10 @@
-
      _
     |_) _ _|_
     |  (_| |_
 
         -- the only SMTP postman!
+
+[![Build Status](https://travis-ci.org/selectel/pat.svg)](http://travis-ci.org/selectel/pat)
 
 `pat` is an easy to use SMTP client for Erlang. You only need to know
 **two** functions:
