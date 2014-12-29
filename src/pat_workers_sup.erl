@@ -23,6 +23,6 @@ init([]) ->
                {Module, start_link, []},
                permanent,
                5000,
-               supervisor,
+               worker,
                [Module]},
     {ok, {{Type, MaxRestarts, MaxSeconds}, [TypeSup]}}.
