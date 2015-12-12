@@ -356,6 +356,7 @@ code(421) -> service_not_available;
 code(450) -> mailbox_unavailable;
 code(451) -> local_error;
 code(452) -> insufficient_system_storage;
+code(454) -> tls_not_available;
 code(500) -> unknown_command;
 code(501) -> invalid_arguments;
 code(502) -> not_implemnted;
