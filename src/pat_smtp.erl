@@ -101,12 +101,17 @@ do_check(Connection, Opts) ->
                undefined -> fqdn()
            end,
     Timeout = proplists:get_value(timeout, Opts, infinity),
-    {ok, Extensions} = do_ehlo(Connection, FQDN, Timeout),
-    {NewConnection, NewExtensions} =
-        do_starttls(Connection, Extensions, [{hostname, FQDN}|Opts]),
-    case do_auth(NewConnection, NewExtensions, Opts) of
-        {ok, true} -> {ok, NewConnection};
-        {ok, false} -> {error, authentication_failed};
+    case do_ehlo(Connection, FQDN, Timeout) of
+        {ok, Extensions} ->
+            case do_starttls(Connection, Extensions, [{hostname, FQDN}|Opts]) of
+                {ok, {NewConnection, NewExtensions}} ->
+                    case do_auth(NewConnection, NewExtensions, Opts) of
+                        {ok, true}  -> {ok, NewConnection};
+                        {ok, false} -> {error, authentication_failed};
+                        {error, _Reason}=Error -> Error
+                    end;
+                {error, _Reason}=Error -> Error
+            end;
         {error, _Reason}=Error -> Error
     end.
 
@@ -123,11 +128,17 @@ do_starttls(Connection, Extensions, Opts) ->
         never -> {Connection, Extensions};
         maybe when not Supported -> {Connection, Extensions};
         _ when Supported ->
-            {ok, NewConnection} = starttls(Connection, Timeout),
-            {ok, NewExtensions} = do_ehlo(NewConnection,
-                                          proplists:get_value(hostname, Opts),
-                                          Timeout),
-            {NewConnection, NewExtensions}
+            case starttls(Connection, Timeout) of
+                {ok, NewConnection} ->
+                    case do_ehlo(NewConnection,
+                                 proplists:get_value(hostname, Opts),
+                                 Timeout) of
+                        {ok, NewExtensions} ->
+                            {ok, {NewConnection, NewExtensions}};
+                        {error, _Reason}=Error -> Error
+                    end;
+                {error, _Reason}=Error -> Error
+            end
     end.
 
 do_auth(Connection, Extensions, Opts) ->
