@@ -73,7 +73,7 @@ join([H|T], Sep) -> <<H/binary, Sep/binary, (join(T, Sep))/binary>>.
 
 -spec wrap(#email{}) -> pat_smtp:envelope().
 wrap(Email) ->
-    {ok, Date} = tempo:format(rfc2822, {now, now()}),
+    {ok, Date} = tempo:format(rfc2822, {now, os:timestamp()}),
     Hdrs = [{<<"Date">>, Date},
             {<<"From">>, Email#email.sender},
             {<<"To">>, join(Email#email.recipients, <<", ">>)},
