@@ -142,21 +142,20 @@ do_starttls(Connection, Extensions, Opts) ->
     end.
 
 do_auth(Connection, Extensions, Opts) ->
+    Auth      = proplists:get_value(auth, Opts, maybe),
     AuthTypes = proplists:get_value(<<"AUTH">>, Extensions, []),
     Timeout   = proplists:get_value(timeout, Opts, infinity),
     User      = proplists:get_value(user, Opts),
     Password  = proplists:get_value(password, Opts),
     HasUserPassword = User =/= undefined andalso Password =/= undefined,
-    case proplists:get_value(auth, Opts, maybe) of
-        always -> {ok, true};                 %% server without AUTH
-        never -> {ok, undefined};
-        maybe when not HasUserPassword ->
+    case Auth of
+        never -> {ok, true};                           %% server without AUTH
+        _ when not HasUserPassword ->
             case AuthTypes of
-                [] -> {ok, undefined};        %% ok, forget it :)
-                _  -> {error, missing_auth}   %% server requires AUTH!
+                [] when Auth =:= maybe -> {ok, true};  %% ok, forget it :)
+                _ -> {error, missing_auth}             %% server requires AUTH!
             end;
-        _ when HasUserPassword ->
-            auth(Connection, {any, User, Password, AuthTypes}, Timeout)
+        _ -> auth(Connection, {any, User, Password, AuthTypes}, Timeout)
     end.
 
 do_send(Connection, {Sender, Recipients, Message}, Opts) ->
