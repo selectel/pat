@@ -1,18 +1,19 @@
-     _
+[![Build Status](https://travis-ci.org/selectel/pat.svg)](http://travis-ci.org/selectel/pat)
+
+_
     |_) _ _|_
     |  (_| |_
 
         -- the only SMTP postman!
 
-[![Build Status](https://travis-ci.org/selectel/pat.svg)](http://travis-ci.org/selectel/pat)
-
-`pat` is an easy to use SMTP client for Erlang. You only need to know
+`pat` is an easy to use SMTP client for Erlang. You only need to remember
 **two** functions:
 * `pat:connect/2`, which takes an SMTP relay, a `{Host, Port}` pair and
-  a list of SMTP options, listed bellow and returns an SMTP connection.
+  a list of supported options (see below) and returns an SMTP connection.
 * `pat:send/2`, which sends a given email via an SMTP connection.
 
-Here's a quick example:
+Example
+-------
 
 ```erlang
 (pat@postoffice)1> Opts = [{user, <<"pat">>}, {password, <<"postman">>}],
@@ -25,18 +26,39 @@ Here's a quick example:
 {ok,<<"2.0.0 Ok: queued on smtp13.mail.yandex.net as mM6eOXwj-mM642Fvi">>}
 ```
 
-As the name suggest, all connection options are **optional**. Here's a list
-of them:
+Options
+-------
 
-```
-| Option                        | Description                                     |
-|-------------------------------+-------------------------------------------------|
-| {ssl, true | false}           | Use SSL for connection.                         |
-| {tls, never | always | maybe} | Start a TLS session, after connecting via an    |
-|                               | unsecure socket, passing 'maybe' means: use TLS |
-|                               | only if the relay supports STARTTLS command.    |
-| {user, binary()}              | SMTP auth. username.                            |
-| {password, binary()}          | SMTP auth. password.                            |
-| {timeout, timeout()}          | A timeout in *seconds* for the underlying       |
-|                               | gen_server.                                     |
-```
+### `ssl`
+
+**Type**: `boolean()`
+
+**Description**: Connect to the SMTP server using a secure socket.
+
+### `tls`
+
+**Type**: `never | maybe | always`
+
+**Description**: Connect to the SMTP server via an unsecure socket and
+    start TLS session afterward. `maybe` means TLS session will be sarted
+    only if the relay supports `STARTTLS`.
+
+### `auth`
+
+**Type**: `never | maybe | always`
+
+**Description**: Authenticate with the SMTP server after connecting.
+    When `maybe`, authentication is only performed if the server requires it.
+
+### `user` and `pasword`
+
+**Type**: `binary()`
+
+**Description**: The meaning is self explanatory. Should be used with `auth`.
+
+### `timeout`
+
+**Type**: `timeout()`
+
+**Description**: Sets a timeout (in **seconds**) for the underlying
+  `gen_server`.
