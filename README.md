@@ -8,9 +8,9 @@
 
 `pat` is an easy to use SMTP client for Erlang. You only need to remember
 **two** functions:
-* `pat:connect/2`, which takes an SMTP relay, a `{Host, Port}` pair and
-  a list of supported options (see below) and returns an SMTP connection.
-* `pat:send/2`, which sends a given email via an SMTP connection.
+* `pat:connect/2` takes an SMTP relay as a `{Host, Port}` pair and
+  a list of supported options (see below) and opens an SMTP connection.
+* `pat:send/2` sends a given email via an SMTP connection.
 
 Example
 -------
