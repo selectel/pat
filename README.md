@@ -29,13 +29,13 @@ Example
 Options
 -------
 
-### `ssl`
+#### `ssl`
 
 **Type**: `boolean()`
 
 **Description**: Connect to the SMTP server using a secure socket.
 
-### `tls`
+#### `tls`
 
 **Type**: `never | maybe | always`
 
@@ -43,22 +43,22 @@ Options
     start TLS session afterward. `maybe` means TLS session will be sarted
     only if the relay supports `STARTTLS`.
 
-### `auth`
+#### `auth`
 
 **Type**: `never | maybe | always`
 
 **Description**: Authenticate with the SMTP server after connecting.
     When `maybe`, authentication is only performed if the server requires it.
 
-### `user` and `pasword`
+#### `user` and `pasword`
 
 **Type**: `binary()`
 
 **Description**: The meaning is self explanatory. Should be used with `auth`.
 
-### `timeout`
+#### `timeout`
 
 **Type**: `timeout()`
 
-**Description**: Sets a timeout (in **seconds**) for the underlying
+**Description**: Sets a timeout (in seconds) for the underlying
   `gen_server`.
