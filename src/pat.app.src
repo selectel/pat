@@ -4,4 +4,7 @@
   {registered, []},
   {applications, [kernel, stdlib, gproc, crypto, ssl]},
   {mod, {pat, []}},
-  {env, []}]}.
+  {env, []},
+  {maintainers, ["Pavel Abalikhin", "Sergei Lebedev"]},
+  {licenses, ["MIT"]},
+  {links, [{"Github", "https://github.com/selectel/pat"}]}]}.
