@@ -1,4 +1,7 @@
+sudo: false
+
 language: erlang
+
 otp_release:
    - 18.2.1
    - 18.2
@@ -16,4 +19,9 @@ otp_release:
    - R15B03
    - R15B02
    - R15B01
-script: "make compile"
+
+before_install:
+   - wget https://s3.amazonaws.com/rebar3/rebar3
+   - chmod +x ./rebar3
+   - ./rebar3 update
+script: "./rebar3 eunit"
