@@ -74,16 +74,31 @@ join([H|T], Sep) -> <<H/binary, Sep/binary, (join(T, Sep))/binary>>.
 -spec wrap(#email{}) -> pat_smtp:envelope().
 wrap(Email) ->
     {ok, Date} = tempo:format(rfc2822, {now, os:timestamp()}),
-    Hdrs = [{<<"Date">>, Date},
-            {<<"From">>, Email#email.sender},
-            {<<"To">>, join(Email#email.recipients, <<", ">>)},
-            {<<"Subject">>, Email#email.subject}|Email#email.headers],
+    Hdrs = [
+        wrap_header(date, Date),
+        wrap_header(from, Email),
+        wrap_header(to, Email),
+        wrap_header(subject, Email)
+    ] ++ wrap_header(aux, Email#email.headers),
     Meta = [<<Key/binary, ": ", Val/binary>> || {Key, Val} <- Hdrs],
     {Email#email.sender,
      Email#email.recipients,
      <<(join(Meta, <<"\r\n">>))/binary, "\r\n",
        "\r\n",
        (Email#email.message)/binary>>}.
+
+wrap_header(date, Date) -> 
+    {<<"Date">>, Date};
+wrap_header(from, Email = #email{from = undefined}) -> 
+    {<<"From">>, Email#email.sender};
+wrap_header(from, Email) -> 
+    {<<"From">>, Email#email.from};
+wrap_header(to, Email) -> {<<"To">>, join(Email#email.recipients, <<", ">>)};
+wrap_header(subject, Email) -> {<<"Subject">>, Email#email.subject};
+wrap_header(aux, Email) when is_record(Email, email)-> wrap_header(aux, Email#email.headers);
+wrap_header(aux, Headers) when is_list(Headers) -> [wrap_header(aux, {K, V}) || {K, V} <- Headers];
+wrap_header(aux, {Name, Value}) -> {Name, Value};
+wrap_header(_, _) -> [].
 
 %% @doc Returns a sorted list of MX servers for `Domain', lowest distance first.
 -spec mxlookup(inet:hostname()) -> [{integer(), inet_res:dns_name()}].
