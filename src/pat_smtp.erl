@@ -125,8 +125,8 @@ do_starttls(Connection, Extensions, Opts) ->
     Timeout   = proplists:get_value(timeout, Opts, infinity),
     Supported = lists:member(<<"STARTTLS">>, Extensions),
     case proplists:get_value(tls, Opts, maybe) of
-        never -> {Connection, Extensions};
-        maybe when not Supported -> {Connection, Extensions};
+        never -> {ok, {Connection, Extensions}};
+        maybe when not Supported -> {ok, {Connection, Extensions}};
         _ when Supported ->
             case starttls(Connection, Timeout) of
                 {ok, NewConnection} ->
