@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/selectel/pat.svg)](http://travis-ci.org/selectel/pat)
+[![Build Status](https://github.com/tnt-dev/pat/workflows/build/badge.svg)](https://github.com/tnt-dev/pat)
 
     _
     |_) _ _|_
